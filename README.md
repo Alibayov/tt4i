@@ -69,6 +69,57 @@ Verify All Pods are Running
 kubectl get pods
    ```
 
+
+# **5. Inter-Pod Communication in Kubernetes**
+
+To enable communication between the **Test Controller Pod** and the **Chrome Node Pod**, the following methods are used:
+![image](https://github.com/user-attachments/assets/95e76adc-2ef7-40df-93af-8bf0dc290ddc)
+
+## **5.1. Kubernetes Service (ClusterIP):**
+- The following services are used for communication between pods:
+  - **`selenium-chrome` Service** → Cluster IP: `172.20.48.10`, Port: `4444/TCP`
+  - **`test-controller` Service** → Cluster IP: `172.20.66.245`, Port: `8080/TCP`
+
+- A **ClusterIP service** is created to allow the Test Controller Pod to access the Chrome Node Pod using a stable hostname.
+- Example service definition:
+  ```yaml
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: selenium-chrome
+  spec:
+    selector:
+      app: selenium-chrome
+    ports:
+      - protocol: TCP
+        port: 4444
+        targetPort: 4444
+  ```
+- The Test Controller Pod communicates with the Chrome Node via `http://selenium-chrome:4444/wd/hub`.
+
+## **5.2. DNS-Based Service Discovery:**
+- Kubernetes automatically resolves pod DNS names within the same namespace.
+- The Test Controller uses `http://selenium-chrome:4444/wd/hub` as the Selenium WebDriver endpoint.
+
+## **5.3. Environment Variables (Injected by Kubernetes):**
+- The **`selenium-chrome`** Service name is injected into the Test Controller Pod as an environment variable to simplify connection handling.
+
+## **5.4. Health Checks & Readiness Probes:**
+- Kubernetes probes ensure that the Chrome Node is available before running tests.
+- Example readiness probe:
+  ```yaml
+  readinessProbe:
+    httpGet:
+      path: /wd/hub/status
+      port: 4444
+    initialDelaySeconds: 5
+    periodSeconds: 10
+  ```
+
+These configurations ensure seamless **inter-pod communication** and allow the Test Controller Pod to efficiently interact with the Chrome Node Pod during Selenium test execution.
+
+
+
 Monitor Logs for Test Execution
 ### **Screenshots of Deployment:**
 ![image](https://github.com/user-attachments/assets/75894e43-e7f5-4e7a-8a7c-5ad9a027ea82)
