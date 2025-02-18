@@ -31,7 +31,7 @@ The Selenium tests cover the following functionalities:
 - **Chrome Node Pod**: Runs headless Chrome for browser-based testing.
 - **HPA (Horizontal Pod Autoscaler)**: Ensures scalability of Chrome Node.
 
-## **4.2. Deployment Steps**
+## **4.2.1 Deployment Steps**
 1. Deploy Kubernetes Resources using the automated script:
    ```bash
    python deploy_and_run_tests.py
@@ -40,7 +40,7 @@ The Selenium tests cover the following functionalities:
    - Connects to the **AWS EKS cluster**
    - Deploys the required **Kubernetes resources**
    - Verifies that all **pods are running**
-4.2. Deployment Steps
+## **4.2.2 Deployment Steps (manual)**
 
 To deploy the test infrastructure on Kubernetes, follow these steps:
 
