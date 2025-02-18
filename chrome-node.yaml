@@ -29,6 +29,12 @@ spec:
             limits:
               memory: "2Gi"
               cpu: "2"
+          readinessProbe:
+            httpGet:
+              path: /wd/hub/status
+              port: 4444
+            initialDelaySeconds: 5
+            periodSeconds: 10
 ---
 apiVersion: v1
 kind: Service
