@@ -40,7 +40,36 @@ The Selenium tests cover the following functionalities:
    - Connects to the **AWS EKS cluster**
    - Deploys the required **Kubernetes resources**
    - Verifies that all **pods are running**
+4.2. Deployment Steps
 
+To deploy the test infrastructure on Kubernetes, follow these steps:
+
+Ensure Kubernetes Context is Set
+   ```bash
+kubectl config use-context <your-eks-cluster-name>
+   ```
+Apply the Chrome Node Deployment
+   ```bash
+kubectl apply -f chrome-node.yaml
+   ```
+Apply the Chrome Node HPA Configuration
+   ```bash
+kubectl apply -f chrome-node-hpa.yaml
+   ```
+Wait for Chrome Node to be Ready (Optional Verification)
+   ```bash
+kubectl get pods -l app=chrome-node
+   ```
+Apply the Test Controller Deployment
+   ```bash
+kubectl apply -f test-controller.yaml
+   ```
+Verify All Pods are Running
+   ```bash
+kubectl get pods
+   ```
+
+Monitor Logs for Test Execution
 ### **Screenshots of Deployment:**
 ![image](https://github.com/user-attachments/assets/75894e43-e7f5-4e7a-8a7c-5ad9a027ea82)
 ![image](https://github.com/user-attachments/assets/e0196088-8f55-4afd-ac50-d0a271527934)
