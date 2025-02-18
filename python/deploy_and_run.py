@@ -4,9 +4,9 @@ import subprocess
 import json
 
 DEFAULT_YAML_FILES = {
-    "chrome-node": "chrome-node.yaml",
-    "chrome-node-hpa": "chrome-node-hpa.yaml",
-    "test-controller": "test-controller.yaml"
+    "chrome-node": "../yaml/chrome-node.yaml",
+    "chrome-node-hpa": "../yaml/chrome-node-hpa.yaml",
+    "test-controller": "../yaml/test-controller.yaml"
 }
 
 def run_command(command):
@@ -48,7 +48,7 @@ def configure_kubeconfig(cluster):
 def get_yaml_files():
     print("\nBy default, the following YAML files will be used:")
     script_dir = os.path.dirname(os.path.realpath(__file__))
-    default_paths = {key: os.path.join(script_dir, value) for key, value in DEFAULT_YAML_FILES.items()}
+    default_paths = {key: os.path.abspath(os.path.join(script_dir, value)) for key, value in DEFAULT_YAML_FILES.items()}
 
     for key, path in default_paths.items():
         print(f" - {key}: {path}")
@@ -69,21 +69,21 @@ def apply_kubernetes_resources(yaml_files):
     print("\nDeploying Kubernetes resources...")
 
     deployment_order = [
-        "chrome-node.yaml",
-        "chrome-node-hpa.yaml",
-        "test-controller.yaml"
+        "../yaml/chrome-node.yaml",
+        "../yaml/chrome-node-hpa.yaml",
+        "../yaml/test-controller.yaml"
     ]
     
     script_dir = os.path.dirname(os.path.realpath(__file__))
     file_map = {os.path.basename(path): path for path in yaml_files}
 
     for file in deployment_order:
-        if file in file_map:
-            print(f"Applying {file_map[file]}...")
-            run_command(["kubectl", "apply", "-f", file_map[file]])
-            print(f"Applied: {file_map[file]}")
+        if os.path.basename(file) in file_map:
+            print(f"Applying {file_map[os.path.basename(file)]}...")
+            run_command(["kubectl", "apply", "-f", file_map[os.path.basename(file)]])
+            print(f"Applied: {file_map[os.path.basename(file)]}")
 
-            if file == "chrome-node-hpa.yaml":
+            if file.endswith("chrome-node-hpa.yaml"):
                 print("Waiting 10 seconds before deploying test-controller...")
                 time.sleep(10)
 
