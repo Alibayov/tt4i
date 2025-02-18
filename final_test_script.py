@@ -422,10 +422,9 @@ while True:
             time.sleep(retry_delay)
     else:
         print("❌ Maximum retries reached. Restarting loop...")
-        continue  # Yeni loop iterasiyasına başla
+        continue  
 
     try:
-        # Testləri icra et
         visit_home_page()
         navigate_to_careers_page()
         verify_required_elements()
